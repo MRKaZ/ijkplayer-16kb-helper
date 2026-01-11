@@ -209,18 +209,9 @@ docker compose run --rm ijk16k-helper \
 **Defaults:**
 
 - `IJKPLAYER_GIT_URL=https://github.com/bilibili/ijkplayer.git`
-- `IJKPLAYER_GIT_REF=k0.8.8`
+- `IJKPLAYER_GIT_REF=k0.8.8` (as documented in compiling guide.)
 
 ***Note: Most users should keep these defaults. Override only if you need a fork or a specific ref.***
-
-Bash
-
-```
-export IJKPLAYER_GIT_URL=https://github.com/your-fork/ijkplayer.git
-export IJKPLAYER_GIT_REF=your-branch-or-commit
-```
-
-------
 
 ## Troubleshooting
 
@@ -229,3 +220,45 @@ export IJKPLAYER_GIT_REF=your-branch-or-commit
 - **WSL2 Performance:** Building from `/mnt/c/...` (Windows-mounted) paths can be slower or flaky due to filesystem semantics.
   - **Recommendation:** Clone this helper repo inside WSL (e.g., `~/ijkplayer-16kb-helper`).
   - If you must run from `/mnt/c`, only set `IJKPLAYER_DIR`, `IJK_OUT_DIR`, or `IJK_DEPS_DIR` when necessary.
+
+## GitHub Actions CI
+
+This repository is equipped with a default CI workflow to automate the compilation and verification process.
+
+**Default Configuration**
+Unless configured via `workflow_dispatch` inputs, the automated run uses the following production-ready defaults:
+
+* **Codec Preset:** `default`
+* **Target ABIs:** `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`
+* **SSL Support:** Enabled (OpenSSL included for HTTPS compatibility)
+* **Verification:** Strict 16KB `PT_LOAD` alignment check on all outputs
+
+**Customization**
+To compile with a different configuration (e.g., specific ABIs or `lite` preset):
+1.  **Fork** this repository.
+2.  Adjust the `--abis` and `--preset` arguments within `.github/workflows/build.yml`.
+3.  Navigate to the **Actions** tab to manually trigger the workflow.
+
+**Artifacts**
+Upon successful completion, the compiled `.so` libraries are packaged and uploaded as a workflow artifact named `android-16kb-out`.
+
+## Acknowledgments
+
+This project is a build toolchain designed to facilitate the compilation of [ijkplayer](https://github.com/bilibili/ijkplayer).
+
+We strictly respect the intellectual property and hard work of the original authors. The core player logic, FFmpeg integration, and architecture belong entirely to the **Bilibili** team and the open-source community.
+
+- **ijkplayer**: [https://github.com/bilibili/ijkplayer](https://github.com/bilibili/ijkplayer)
+- **FFmpeg**: [https://ffmpeg.org](https://ffmpeg.org)
+- **OpenSSL**: [https://www.openssl.org](https://www.openssl.org)
+
+## License
+
+This project (the build scripts and helper tools) is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### Third-Party Notices
+
+The artifacts produced by this tool include code from the following projects, which are subject to their own licenses:
+
+* **ijkplayer / FFmpeg**: Licensed under LGPLv2.1 (default) or GPL (if configured). Users are responsible for complying with these licenses when distributing the generated `.so` files.
+* **OpenSSL**: Licensed under the Apache License 2.0.

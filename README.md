@@ -1,22 +1,21 @@
 Standalone build helper for producing **16KB page-size compatible** ijkplayer Android `.so` libraries.
 
-## What This Repo Does
+> **Download:** Pre-built artifacts for `default` and `lite-hevc` presets (all ABIs) are available for download via the **Actions** tab.
+> 
+## Overview
 
-1. Clones ijkplayer into `./ijkplayer`.
-2. Applies a small patch so ijkplayer/ijksdl use 16KB-safe linker flags.
-3. Builds OpenSSL + FFMPEG (ensuring `https://...` playback works).
-4. Builds ijkplayer via `ndk-build`.
-5. **Verifies:**
-   - ELF `PT_LOAD` alignment is `<= 0x4000` (16KB).
-   - FFMPEG has `https` + `tls` protocol support (symbols present).
+This toolchain acts as a standalone build environment designed to modernize `ijkplayer` for current Android standards. It orchestrates the complete lifecycle—from cloning upstream sources to generating production-ready binaries.
 
-> **Notes:**
->
-> - Uses a dedicated git branch in the cloned ijkplayer repo for helper edits.
-> - Defaults to the upstream ref `k0.8.8` unless overridden as ijkplayer compiling documentation.
-> - Produces outputs per-ABI under `android-16kb/out/<abi>/`.
+**Key Operations:**
+1.  **Dependency Compilation:** Builds OpenSSL and FFmpeg from source, ensuring full HTTPS/TLS protocol support.
+2.  **16KB Compliance:** Automatically injects linker flags into `ijkplayer` and `ijksdl` build scripts to ensure `PT_LOAD` segments align to 16KB boundaries (required for Android 15+).
+3.  **Automated Verification:** Post-build scripts inspect the ELF headers of every generated `.so` file to strictly enforce alignment (<= 0x4000) and verify symbol presence.
 
-**Artifacts are written to**: `android-16kb/out/<abi>/*.so`
+> **Build Context:**
+> The helper uses a dedicated git branch within the cloned repo to maintain a clean workspace. By default, it targets upstream ref `k0.8.8`.
+
+**Output:**
+Artifacts are organized by ABI in `android-16kb/out/<abi>/*.so`.
 
 ------
 

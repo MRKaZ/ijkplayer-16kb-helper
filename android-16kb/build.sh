@@ -495,13 +495,21 @@ build_ijk_one() {
 verify_out() {
   local ndk="$1"
   local out_dir="$2"
+  local verify_elf="$SCRIPT_DIR/verify/verify_elf_page_size.sh"
+  local verify_https="$SCRIPT_DIR/verify/verify_ijkffmpeg_https.sh"
 
   echo "[*] Verifying ELF segment alignment (<= 16KB)"
-  "$SCRIPT_DIR/verify/verify_elf_page_size.sh" "$out_dir" --ndk "$ndk" --max-align 0x4000
+  if [[ -f "$verify_elf" && ! -x "$verify_elf" ]]; then
+    chmod +x "$verify_elf" || true
+  fi
+  "$verify_elf" "$out_dir" --ndk "$ndk" --max-align 0x4000
 
   if [[ "${WITH_OPENSSL:-$DEFAULT_WITH_OPENSSL}" == "1" ]]; then
     echo "[*] Verifying HTTPS/TLS protocols are enabled in libijkffmpeg.so"
-    "$SCRIPT_DIR/verify/verify_ijkffmpeg_https.sh" "$out_dir" --ndk "$ndk"
+    if [[ -f "$verify_https" && ! -x "$verify_https" ]]; then
+      chmod +x "$verify_https" || true
+    fi
+    "$verify_https" "$out_dir" --ndk "$ndk"
   fi
 }
 

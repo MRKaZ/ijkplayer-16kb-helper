@@ -1,4 +1,4 @@
-name: build-16kb
+name: build-16kb-lite-hevc
 
 on:
   workflow_dispatch:
@@ -20,11 +20,11 @@ jobs:
       - name: Build all ABIs (default preset)
         run: |
           docker compose run --rm ijk16k-helper \
-            bash -lc "bash ./scripts/run.sh --non-interactive --clean --abis arm64-v8a,armeabi-v7a,x86,x86_64 --preset default"
+            bash -lc "bash ./scripts/run.sh --non-interactive --clean --abis arm64-v8a,armeabi-v7a,x86,x86_64 --preset lite-hevc"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: android-16kb-out
+          name: android-16kb-lite-hevc-out
           path: android-16kb/out
           if-no-files-found: error

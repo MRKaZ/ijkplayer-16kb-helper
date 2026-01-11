@@ -1,0 +1,30 @@
+name: build-16kb
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main", "master" ]
+    tags: [ "v*" ]
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-22.04
+    env:
+      IMAGE_TAG: ci
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build helper image
+        run: docker compose build
+
+      - name: Build all ABIs (default preset)
+        run: |
+          docker compose run --rm ijk16k-helper \
+            bash -lc "bash ./scripts/run.sh --non-interactive --clean --abis arm64-v8a,armeabi-v7a,x86,x86_64 --preset default"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-16kb-out
+          path: android-16kb/out
+          if-no-files-found: error

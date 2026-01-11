@@ -1,0 +1,13 @@
+name: ijkplayer-16kb-helper
+
+services:
+  ijk16k-helper:
+    image: ijkplayer-16kb-helper:${IMAGE_TAG:-local}
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    stdin_open: true
+    tty: true

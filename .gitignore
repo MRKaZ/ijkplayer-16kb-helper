@@ -1,0 +1,20 @@
+# helper clone/work dirs
+ijkplayer/
+work/
+
+# optional local Android SDK install (if user chooses portable install)
+.android-sdk/
+
+# generated env file (user-specific paths)
+scripts/android-env.sh
+
+# build outputs
+android-16kb/out/
+android-16kb/.deps/
+
+# packaging outputs
+dist/
+
+# misc
+.DS_Store
+*.log
